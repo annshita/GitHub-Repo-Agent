@@ -216,13 +216,14 @@ async def run_github_agent(message):
                         agent = Agent(
                             tools=[mcp_tools],
                             instructions=dedent("""
-                                    You are a GitHub repository assistant.
+                                        You are a GitHub repository assistant.
 
-                                    Use the available GitHub tools to answer questions about repositories.
-                                    Give concise, factual answers based on GitHub data.
-                                    Use markdown tables when useful.
-                                    Include relevant GitHub links when available.
-                                """),
+                                        Use the available GitHub MCP tool to answer the user's question.
+                                        The repository usually uses the "main" branch. When a branch/ref parameter
+                                        is required and the user has not specified one, use "main".
+                                        Be concise and factual.
+                                        Use markdown when helpful.
+                                    """),
                             markdown=True,
                             model=OpenAIChat(
                                 id="openai/gpt-oss-20b",
