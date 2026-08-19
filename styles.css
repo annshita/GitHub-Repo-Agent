@@ -1,0 +1,122 @@
+/* GitHub Repo Agent — Lavender pastel, minimal theme */
+
+:root {
+    --lav-bg1: #e3ddf7;
+    --lav-bg2: #d6ccf2;
+    --lav-surface: #ffffff;
+    --lav-primary: #7c6bd6;
+    --lav-primary-hover: #6a58c9;
+    --lav-accent: #c9bdf0;
+    --lav-border: #cabff0;
+    --lav-text: #332f4d;
+    --lav-muted: #6f6a89;
+    --lav-select: #ece5fb;
+}
+
+/* Purpleish gradient background */
+.stApp {
+    background: linear-gradient(180deg, var(--lav-bg1) 0%, var(--lav-bg2) 100%);
+    color: var(--lav-text);
+}
+
+/* Trim Streamlit's default padding — no wasted space */
+.block-container {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+    max-width: 900px;
+}
+
+header[data-testid="stHeader"] {
+    background: transparent;
+}
+
+.app-title {
+    color: var(--lav-text);
+    font-weight: 700;
+    font-size: 2rem;
+    margin: 0 0 0.25rem 0;
+    padding: 0;
+    letter-spacing: -0.5px;
+}
+
+.app-subtitle {
+    color: var(--lav-muted);
+    font-size: 1rem;
+    margin: 0 0 1.25rem 0;
+}
+
+/* Text inputs + textarea (white for contrast) */
+.stTextInput input,
+.stTextArea textarea {
+    background-color: var(--lav-surface) !important;
+    border: 1px solid var(--lav-border) !important;
+    border-radius: 10px !important;
+    color: var(--lav-text) !important;
+}
+
+.stTextInput input:focus,
+.stTextArea textarea:focus {
+    border-color: var(--lav-primary) !important;
+    box-shadow: 0 0 0 2px rgba(124, 107, 214, 0.20) !important;
+}
+
+/* Query Type box — distinct purple tint */
+.stSelectbox div[data-baseweb="select"]>div {
+    background-color: var(--lav-select) !important;
+    border: 1px solid var(--lav-primary) !important;
+    border-radius: 10px !important;
+    color: var(--lav-text) !important;
+}
+
+/* Labels */
+.stTextInput label,
+.stTextArea label,
+.stSelectbox label {
+    color: var(--lav-text) !important;
+    font-weight: 500;
+}
+
+/* Primary button */
+.stButton>button {
+    background-color: var(--lav-primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 0.55rem 1rem;
+    font-weight: 600;
+    transition: background-color 0.15s ease;
+}
+
+.stButton>button:hover {
+    background-color: var(--lav-primary-hover);
+    color: #ffffff;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: var(--lav-surface);
+    border-right: 1px solid var(--lav-border);
+}
+
+/* Results markdown */
+.stMarkdown {
+    color: var(--lav-text);
+}
+
+.stMarkdown table {
+    border-collapse: collapse;
+}
+
+.stMarkdown th,
+.stMarkdown td {
+    border: 1px solid var(--lav-border);
+    padding: 6px 10px;
+}
+
+.stMarkdown th {
+    background-color: var(--lav-accent);
+}
+
+.stSpinner>div {
+    border-top-color: var(--lav-primary) !important;
+}
