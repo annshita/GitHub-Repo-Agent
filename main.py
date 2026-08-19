@@ -30,7 +30,7 @@ load_css("styles.css")
 # Title and description
 st.markdown('<h1 class="app-title">GitHub Repo Agent</h1>', unsafe_allow_html=True)
 st.markdown(
-    '<p class="app-subtitle">Explore GitHub repositories with natural language'    
+    '<p class="app-subtitle">Explore GitHub repositories with natural language '    
     'using the Model Context Protocol</p>',
     unsafe_allow_html=True,
 )
