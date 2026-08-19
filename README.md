@@ -4,6 +4,10 @@ A GitHub repository exploration tool powered by the **Model Context Protocol (MC
 
 This Streamlit app lets you interact with GitHub repositories using natural language queries.
 
+## Demo
+
+https://repository-agent-mcp-tools.streamlit.app/
+
 ## ✨ Features
 
 - 🔍 Natural language queries for GitHub repositories
@@ -26,7 +30,9 @@ This Streamlit app lets you interact with GitHub repositories using natural lang
 
 ## 🚀 Installation
 
-### 1. Clone the repository
+### 1. Clone the repository 
+
+p.s. the project is originally inspired from the source mentioned below, you can choose to clone this or that based on your preference.
 
     git clone https://github.com/Arindam200/awesome-ai-apps.git
     cd mcp_ai_agents/github_mcp_agent
