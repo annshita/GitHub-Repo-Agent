@@ -53,47 +53,79 @@ st.markdown(
 
 # Authentication
 # If both credentials are already loaded from .env, hide the sidebar.
+# env_groq_key = os.getenv("GROQ_API_KEY", "").strip()
+# env_github_token = os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN", "").strip()
+
+# api_key = env_groq_key
+# github_token = env_github_token
+
+# if not (env_groq_key and env_github_token):
+#     with st.sidebar:
+#         st.header("🔑 Authentication")
+
+#         if not env_groq_key:
+#             api_key = st.text_input(
+#                 "Groq API Key",
+#                 type="password",
+#                 help="Get a key at console.groq.com"
+#             )
+#             if api_key:
+#                 os.environ["GROQ_API_KEY"] = api_key
+
+#         if not env_github_token:
+#             github_token = st.text_input(
+#                 "GitHub Token",
+#                 type="password",
+#                 help="Create a token at github.com/settings/tokens"
+#             )
+#             if github_token:
+#                 os.environ["GITHUB_PERSONAL_ACCESS_TOKEN"] = github_token
+
+#         st.markdown("---")
+# else:
+#     st.markdown(
+#         """
+#         <style>
+#             [data-testid="stSidebar"],
+#             [data-testid="collapsedControl"] {
+#                 display: none !important;
+#             }
+#         </style>
+#         """,
+#         unsafe_allow_html=True,
+#     )
+
 env_groq_key = os.getenv("GROQ_API_KEY", "").strip()
 env_github_token = os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN", "").strip()
 
-api_key = env_groq_key
-github_token = env_github_token
-
-if not (env_groq_key and env_github_token):
-    with st.sidebar:
-        st.header("🔑 Authentication")
-
-        if not env_groq_key:
-            api_key = st.text_input(
-                "Groq API Key",
-                type="password",
-                help="Get a key at console.groq.com"
-            )
-            if api_key:
-                os.environ["GROQ_API_KEY"] = api_key
-
-        if not env_github_token:
-            github_token = st.text_input(
-                "GitHub Token",
-                type="password",
-                help="Create a token at github.com/settings/tokens"
-            )
-            if github_token:
-                os.environ["GITHUB_PERSONAL_ACCESS_TOKEN"] = github_token
-
-        st.markdown("---")
-else:
-    st.markdown(
-        """
-        <style>
-            [data-testid="stSidebar"],
-            [data-testid="collapsedControl"] {
-                display: none !important;
-            }
-        </style>
-        """,
-        unsafe_allow_html=True,
+with st.sidebar:
+    st.header("🔑 Authentication")
+    
+    # Notice we removed value=env_groq_key so it stays completely blank
+    ui_groq_key = st.text_input(
+        "Groq API Key",
+        type="password",
+        placeholder="Enter your own key (optional)",
+        help="Get a key at console.groq.com"
     )
+    if ui_groq_key:
+        os.environ["GROQ_API_KEY"] = ui_groq_key
+
+    # Notice we removed value=env_github_token here as well
+    ui_github_token = st.text_input(
+        "GitHub Token",
+        type="password",
+        placeholder="Enter your own token (optional)",
+        help="Create a token at github.com/settings/tokens"
+    )
+    if ui_github_token:
+        os.environ["GITHUB_PERSONAL_ACCESS_TOKEN"] = ui_github_token
+
+    st.markdown("---")
+
+# Determine which keys the app should use (User's input first, fallback to your hidden .env keys)
+api_key = ui_groq_key or env_groq_key
+github_token = ui_github_token or env_github_token
 
 # # Query input
 # col1, col2 = st.columns([3, 1])
@@ -238,15 +270,32 @@ async def run_github_agent(message):
                             return response.content
                         except Exception as agent_error:
                             error_text = str(agent_error)
-                            if "403" in error_text or "access" in error_text.lower() or "permission" in error_text.lower():
-                                    model_id = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
-                                    return (
-                                        f"Groq model access error for `{model_id}`. "
-                                        "Check your Groq project/model permissions, or set "
-                                        "`GROQ_MODEL` in `.env` to a model your API key can access. "
-                                        f"Original error: {error_text}"
-                                    )
+                            error_lower = error_text.lower()
+
+                            if any(term in error_lower for term in ["tokens per minute", "tpm", "request too large", "rate limit", "429"]):
+                                return "> ⚠️ **Token Limit Exceeded**  \n> Please add your own API keys in the sidebar to continue."
+
+                            if "403" in error_text or "access" in error_lower or "permission" in error_lower:
+                                model_id = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+                                return f"Groq model access error for `{model_id}`. Check your Groq permissions. Original error: {error_text}"
+                                
                             return f"Error running agent: {error_text}"
+
+                        # Run agent with error handling
+                        # try:
+                        #     response = await agent.arun(message)
+                        #     return response.content
+                        # except Exception as agent_error:
+                        #     error_text = str(agent_error)
+                        #     if "403" in error_text or "access" in error_text.lower() or "permission" in error_text.lower():
+                        #             model_id = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+                        #             return (
+                        #                 f"Groq model access error for `{model_id}`. "
+                        #                 "Check your Groq project/model permissions, or set "
+                        #                 "`GROQ_MODEL` in `.env` to a model your API key can access. "
+                        #                 f"Original error: {error_text}"
+                        #             )
+                        #     return f"Error running agent: {error_text}"
                                 
                         except Exception as init_error:
                             return f"Error initializing MCP tools: {str(init_error)}"
@@ -308,3 +357,6 @@ if st.button("Run Query", type="primary", use_container_width=True):
                 st.markdown(result)
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
+
+st.divider()
+st.caption("The agent will most likely crash for repositories with no readme files. I'm working on it. Also try adding your own keys for better experience")
